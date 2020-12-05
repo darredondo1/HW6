@@ -1,5 +1,5 @@
 #include <cuda.h>
-#include "../timer.h"
+#include "timer.h"
 
 __global__ void matrixMultKernel(float* A, float* B, float* C, int n)
 {
