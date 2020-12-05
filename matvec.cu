@@ -3,7 +3,7 @@
 #include <math.h>
 
 __global__ void
-vecvecMultKernel(float* A, float* B, float* C, int n)
+matVecMultKernel(float* A, float* B, float* C, int n)
 {
     int row = blockIdx.x*blockDim.x + threadIdx.x;
     
