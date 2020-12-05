@@ -1,5 +1,6 @@
 #include <cuda.h>
-#include "../timer.h"
+#include "timer.h"
+#include <math.h>
 
 __global__ void matrixMultKernel(float* A, float* B, float* C, int n)
 {
@@ -59,24 +60,19 @@ int main(int argc, char* argv[])
     h_A = (float*)malloc(size);
     h_B = (float*)malloc(size);
     h_C = (float*)malloc(size);
-    for (int i = 0; i < n*n; i++)
-    {
-        h_A[i] = 0.5;
-        h_B[i] = 0.2;
-    }
+    
+    cudaMalloc((void**)&d_A, size);
+    cudaMalloc((void**)&d_B, size);
+    cudaMalloc((void**)&d_C, size);
 
-    //t0 = get_time();
-    //matrixMult(h_A, h_B, h_C, n);
-    //tfinal = get_time() - t0;
-    //printf("MatrixMult Time %e, Sum %e\n", tfinal, sum(h_C, n));
 
-   for (int n=0;n<numTests;n++)
+   for (int test=0;test<numTests;test++)
    {
-        cudaMalloc((void**)&d_A, size);
-        cudaMalloc((void**)&d_B, size);
-        cudaMalloc((void**)&d_C, size);
-
-
+        for (int i = 0; i < n*n; i++)
+        {
+            h_A[i] = (float) rand();
+            h_B[i] = (float) rand();
+        }
         // Matmat
         dim3 dimBlock(32,32);
         int grid_dim = ceil(n / 32.0);
@@ -99,15 +95,15 @@ int main(int argc, char* argv[])
     ///DA
 
         
-        cudaFree(d_A);
-        cudaFree(d_B);
-        cudaFree(d_C);
+   }
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
 
-        free(h_A);
-        free(h_B);
-        free(h_C);
-    }
-
+    free(h_A);
+    free(h_B);
+    free(h_C);
+    
     return 0;
 }
 
