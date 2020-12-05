@@ -12,7 +12,7 @@ matVecMultKernel(float* A, float* B, float* C, int n)
         float val = 0;
         for (int i=0; i<n; i++)
         {
-            val += A[i*n + row];
+            val += A[i*n + row] * B[row];
         }
         C[row] = val;
     }
