@@ -60,23 +60,18 @@ int main(int argc, char* argv[])
     h_A = (float*)malloc(size);
     h_B = (float*)malloc(size);
     h_C = (float*)malloc(size);
-
-    //t0 = get_time();
-    //matrixMult(h_A, h_B, h_C, n);
-    //tfinal = get_time() - t0;
-    //printf("MatrixMult Time %e, Sum %e\n", tfinal, sum(h_C, n));
     
     cudaMalloc((void**)&d_A, size);
     cudaMalloc((void**)&d_B, size);
     cudaMalloc((void**)&d_C, size);
 
 
-   for (int n=0;n<numTests;n++)
+   for (int test=0;test<numTests;test++)
    {
         for (int i = 0; i < n*n; i++)
         {
-            h_A[i] = (double) rand();
-            h_B[i] = (double) rand();
+            h_A[i] = (float) rand();
+            h_B[i] = (float) rand();
         }
         // Matmat
         dim3 dimBlock(32,32);
