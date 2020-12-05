@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     //make file
     FILE * fPtr;
     char fPath[100];
-    sprintf(fPath,"Problem1/matmat_N_%d.txt",n);
+    sprintf(fPath,"Problem2/matvec_N_%d.txt",n);
 ///DA
 
     h_A = (float*)malloc(size);
@@ -114,10 +114,10 @@ int main(int argc, char* argv[])
         int grid_dim = ceil(n / 32.0);
         dim3 dimGrid(grid_dim, grid_dim);
         
-        t0 = get_time();
-        matVecMult(h_A, h_B, h_C, n);
-        tfinal = get_time() - t0;
-        printf("MatVecMult Time %e, Sum %e\n", tfinal, vecSum(h_C, n));
+//        t0 = get_time();
+//        matVecMult(h_A, h_B, h_C, n);
+//        tfinal = get_time() - t0;
+//        printf("MatVecMult Time %e, Sum %e\n", tfinal, vecSum(h_C, n));
 
         t0 = get_time();
         cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
