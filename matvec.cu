@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
         matVecMultKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, n);
         cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
         tfinal = get_time() - t0;
-        printf("MatrixMultKernel Time %e, Size %e\n", tfinal, vecSum(h_C, n));
+        printf("MatVecMultKernel Time %e, Size %e\n", tfinal, vecSum(h_C, n));
 
     ///
         //save time
