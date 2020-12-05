@@ -47,12 +47,13 @@ int main(int argc, char* argv[])
 
     int n = atoi(argv[1]);
     int size = n*n*sizeof(float);
+    int numTests = atoi(argv[2]);
 
 ///
     //make file
     FILE * fPtr;
     char fPath[100];
-    sprintf(fPath,"matmat_N_%d.txt",n);
+    sprintf(fPath,"Problem1/matmat_N_%d.txt",n);
 ///DA
 
     h_A = (float*)malloc(size);
@@ -69,41 +70,43 @@ int main(int argc, char* argv[])
     //tfinal = get_time() - t0;
     //printf("MatrixMult Time %e, Sum %e\n", tfinal, sum(h_C, n));
 
-   
-    cudaMalloc((void**)&d_A, size);
-    cudaMalloc((void**)&d_B, size);
-    cudaMalloc((void**)&d_C, size);
+   for (int n=0;n<numTests;n++)
+   {
+        cudaMalloc((void**)&d_A, size);
+        cudaMalloc((void**)&d_B, size);
+        cudaMalloc((void**)&d_C, size);
 
 
-    // Matmat
-    dim3 dimBlock(32,32);
-    int grid_dim = ceil(n / 32.0);
-    dim3 dimGrid(grid_dim, grid_dim);
+        // Matmat
+        dim3 dimBlock(32,32);
+        int grid_dim = ceil(n / 32.0);
+        dim3 dimGrid(grid_dim, grid_dim);
 
-    t0 = get_time();
-    cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
-    matrixMultKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, n);
-    cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
-    tfinal = get_time() - t0;
-    printf("MatrixMultKernel Time %e, Size %e\n", tfinal, sum(h_C, n));
+        t0 = get_time();
+        cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
+        cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
+        matrixMultKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, n);
+        cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+        tfinal = get_time() - t0;
+        printf("MatrixMultKernel Time %e, Size %e\n", tfinal, sum(h_C, n));
 
-///
-    //save time
-    fPtr = fopen(fPath ,"a");
-    if (fPtr == NULL) exit(EXIT_FAILURE);
-    fprintf(fPtr,"%e\n",tfinal);
-    fclose(fPtr);
-///DA
+    ///
+        //save time
+        fPtr = fopen(fPath ,"a");
+        if (fPtr == NULL) exit(EXIT_FAILURE);
+        fprintf(fPtr,"%e\n",tfinal);
+        fclose(fPtr);
+    ///DA
 
-    
-    cudaFree(d_A);
-    cudaFree(d_B);
-    cudaFree(d_C);
+        
+        cudaFree(d_A);
+        cudaFree(d_B);
+        cudaFree(d_C);
 
-    free(h_A);
-    free(h_B);
-    free(h_C);
+        free(h_A);
+        free(h_B);
+        free(h_C);
+    }
 
     return 0;
 }
