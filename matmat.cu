@@ -69,13 +69,14 @@ int main(int argc, char* argv[])
     //matrixMult(h_A, h_B, h_C, n);
     //tfinal = get_time() - t0;
     //printf("MatrixMult Time %e, Sum %e\n", tfinal, sum(h_C, n));
+    
+    cudaMalloc((void**)&d_A, size);
+    cudaMalloc((void**)&d_B, size);
+    cudaMalloc((void**)&d_C, size);
+
 
    for (int n=0;n<numTests;n++)
    {
-        cudaMalloc((void**)&d_A, size);
-        cudaMalloc((void**)&d_B, size);
-        cudaMalloc((void**)&d_C, size);
-
 
         // Matmat
         dim3 dimBlock(32,32);
@@ -99,15 +100,15 @@ int main(int argc, char* argv[])
     ///DA
 
         
-        cudaFree(d_A);
-        cudaFree(d_B);
-        cudaFree(d_C);
+   }
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
 
-        free(h_A);
-        free(h_B);
-        free(h_C);
-    }
-
+    free(h_A);
+    free(h_B);
+    free(h_C);
+    
     return 0;
 }
 
