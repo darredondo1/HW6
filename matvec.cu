@@ -99,10 +99,10 @@ int main(int argc, char* argv[])
             if (i<n) h_B[i] = (float) rand();
         }
         
-//        t0 = get_time();
-//        matVecMult(h_A, h_B, h_C, n);
-//        tfinal = get_time() - t0;
-//        printf("MatVecMult Time %e, Sum %e\n", tfinal, vecSum(h_C, n));
+        t0 = get_time();
+        matVecMult(h_A, h_B, h_C, n);
+        tfinal = get_time() - t0;
+        printf("MatVecMult Time %e, Sum %e\n", tfinal, vecSum(h_C, n));
 
         t0 = get_time();
         cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
