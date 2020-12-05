@@ -25,8 +25,7 @@ matVecMultKernel(float* A, float* B, float* C, int n)
     
     if (row < n && col < n)
     {
-        float val = A[row*n+col] * B[col];
-        C[row] = val;
+        C[row] = A[row*n+col] * B[col];
     }
 }
 
