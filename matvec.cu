@@ -2,7 +2,8 @@
 #include "timer.h"
 #include <math.h>
 
-__global__ void matrixMultKernel(float* A, float* B, float* C, int n)
+__global__ void
+matrixMultKernel(float* A, float* B, float* C, int n)
 {
     int col = blockIdx.x*blockDim.x + threadIdx.x;
     int row = blockIdx.y*blockDim.y + threadIdx.y;
@@ -16,6 +17,7 @@ __global__ void matrixMultKernel(float* A, float* B, float* C, int n)
     }
 }
 
+__global__ void
 matVecMultKernel(float* A, float* B, float* C, int n)
 {
     int col = blockIdx.x*blockDim.x + threadIdx.x;
@@ -69,8 +71,8 @@ double vecSum(float* C, int n)
 {
     double s = 0;
     for (int i = 0; i < n; i++)
-        s += C[i]
-    return s
+        s += C[i];
+    return s;
 }
 
 int main(int argc, char* argv[])
