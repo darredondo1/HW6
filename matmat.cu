@@ -1,5 +1,6 @@
 #include <cuda.h>
 #include "timer.h"
+#include <math.h>
 
 __global__ void matrixMultKernel(float* A, float* B, float* C, int n)
 {
@@ -59,11 +60,6 @@ int main(int argc, char* argv[])
     h_A = (float*)malloc(size);
     h_B = (float*)malloc(size);
     h_C = (float*)malloc(size);
-    for (int i = 0; i < n*n; i++)
-    {
-        h_A[i] = 0.5;
-        h_B[i] = 0.2;
-    }
 
     //t0 = get_time();
     //matrixMult(h_A, h_B, h_C, n);
@@ -77,7 +73,11 @@ int main(int argc, char* argv[])
 
    for (int n=0;n<numTests;n++)
    {
-
+        for (int i = 0; i < n*n; i++)
+        {
+            h_A[i] = (double) rand();
+            h_B[i] = (double) rand();
+        }
         // Matmat
         dim3 dimBlock(32,32);
         int grid_dim = ceil(n / 32.0);
