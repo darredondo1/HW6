@@ -3,29 +3,18 @@
 #include <math.h>
 
 __global__ void
-matrixMultKernel(float* A, float* B, float* C, int n)
+vecvecMultKernel(float* A, float* B, float* C, int n)
 {
-    int col = blockIdx.x*blockDim.x + threadIdx.x;
-    int row = blockIdx.y*blockDim.y + threadIdx.y;
-
-    if (row < n && col < n)
+    int row = blockIdx.x*blockDim.x + threadIdx.x;
+    
+    if (row < n)
     {
         float val = 0;
-        for (int k = 0; k < n; k++)
-            val += A[row*n+k] * B[k*n+col];
-        C[row*n+col] = val;
-    }
-}
-
-__global__ void
-matVecMultKernel(float* A, float* B, float* C, int n)
-{
-    int col = blockIdx.x*blockDim.x + threadIdx.x;
-    int row = blockIdx.y*blockDim.y + threadIdx.y;
-    
-    if (row < n && col < n)
-    {
-        C[row] = A[row*n+col] * B[col];
+        for (int i=0; i<n; i++)
+        {
+            val += A[i*n + row]
+        }
+        C[row] = val;
     }
 }
 
@@ -109,10 +98,6 @@ int main(int argc, char* argv[])
             h_A[i] = (float) rand();
             if (i<n) h_B[i] = (float) rand();
         }
-        // Matmat
-        dim3 dimBlock(32,32);
-        int grid_dim = ceil(n / 32.0);
-        dim3 dimGrid(grid_dim, grid_dim);
         
 //        t0 = get_time();
 //        matVecMult(h_A, h_B, h_C, n);
@@ -121,11 +106,11 @@ int main(int argc, char* argv[])
 
         t0 = get_time();
         cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
-        cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
-        matVecMultKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, n);
-        cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+        cudaMemcpy(d_B, h_B, vecsize, cudaMemcpyHostToDevice);
+        matVecMultKernel<<<ceil(n/256.0), 256>>>(d_A, d_B, d_C, n);
+        cudaMemcpy(h_C, d_C, vecsize, cudaMemcpyDeviceToHost);
         tfinal = get_time() - t0;
-        printf("MatVecMultKernel Time %e, Size %e\n", tfinal, vecSum(h_C, n));
+        printf("MatVecMultKernel Time %e, Sum %e\n", tfinal, vecSum(h_C, n));
 
     ///
         //save time
